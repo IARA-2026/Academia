@@ -25,11 +25,12 @@ const aulas = [
 ];
 
 /**
- * Calcula as vagas restantes sem modificar a lista de aulas.
- * @returns {Array<object>} aulas com o total de vagas disponíveis
+ * Prepara os dados públicos de uma aula e calcula as vagas restantes.
+ * @param {object} aula aula armazenada em memória
+ * @returns {object} aula com vagas disponíveis
  */
-function listarAulasComVagas() {
-  return aulas.map((aula) => ({
+function formatarAulaComVagas(aula) {
+  return {
     id: aula.id,
     modalidade: aula.modalidade,
     instrutor: aula.instrutor,
@@ -37,7 +38,12 @@ function listarAulasComVagas() {
     capacidade: aula.capacidade,
     matriculados: aula.matriculados,
     vagasDisponiveis: aula.capacidade - aula.matriculados
-  }));
+  };
+}
+
+/** @returns {Array<object>} lista de aulas com vagas disponíveis */
+function listarAulasComVagas() {
+  return aulas.map(formatarAulaComVagas);
 }
 
 app.get('/', (req, res) => {
@@ -46,6 +52,22 @@ app.get('/', (req, res) => {
 
 app.get('/api/aulas', (req, res) => {
   res.json(listarAulasComVagas());
+});
+
+app.get('/api/aulas/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ erro: 'ID da aula inválido.' });
+  }
+
+  const aula = aulas.find((item) => item.id === id);
+
+  if (!aula) {
+    return res.status(404).json({ erro: 'Aula não encontrada.' });
+  }
+
+  return res.json(formatarAulaComVagas(aula));
 });
 
 app.listen(port, () => {
