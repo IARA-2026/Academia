@@ -3,6 +3,7 @@
 const express = require('express');
 
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 const aulas = [
@@ -68,6 +69,47 @@ app.get('/api/aulas/:id', (req, res) => {
   }
 
   return res.json(formatarAulaComVagas(aula));
+});
+
+app.post('/api/aulas', (req, res) => {
+  const dados = req.body ?? {};
+
+  const modalidade =
+    typeof dados.modalidade === 'string' ? dados.modalidade.trim() : '';
+  const instrutor =
+    typeof dados.instrutor === 'string' ? dados.instrutor.trim() : '';
+  const horario =
+    typeof dados.horario === 'string' ? dados.horario.trim() : '';
+  const capacidade = Number(dados.capacidade);
+
+  const horarioValido = /^([01]\d|2[0-3]):([0-5]\d)$/.test(horario);
+
+  if (
+    modalidade.length < 2 ||
+    modalidade.length > 60 ||
+    instrutor.length < 2 ||
+    instrutor.length > 80 ||
+    !horarioValido ||
+    !Number.isInteger(capacidade) ||
+    capacidade < 1 ||
+    capacidade > 100
+  ) {
+    return res.status(400).json({
+      erro: 'Informe modalidade, instrutor, horário e capacidade válidos.'
+    });
+  }
+
+  const novaAula = {
+    id: aulas.length + 1,
+    modalidade,
+    instrutor,
+    horario,
+    capacidade,
+    matriculados: 0
+  };
+
+  aulas.push(novaAula);
+  return res.status(201).json(formatarAulaComVagas(novaAula));
 });
 
 app.listen(port, () => {
