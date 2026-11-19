@@ -25,6 +25,9 @@ const aulas = [
   }
 ];
 
+// Mantém IDs únicos mesmo quando uma aula é excluída.
+let proximoIdAula = aulas.length + 1;
+
 /**
  * Prepara os dados públicos de uma aula e calcula as vagas restantes.
  * @param {object} aula aula armazenada em memória
@@ -100,7 +103,7 @@ app.post('/api/aulas', (req, res) => {
   }
 
   const novaAula = {
-    id: aulas.length + 1,
+    id: proximoIdAula,
     modalidade,
     instrutor,
     horario,
@@ -109,6 +112,7 @@ app.post('/api/aulas', (req, res) => {
   };
 
   aulas.push(novaAula);
+  proximoIdAula += 1;
   return res.status(201).json(formatarAulaComVagas(novaAula));
 });
 
@@ -161,6 +165,32 @@ app.put('/api/aulas/:id', (req, res) => {
   aula.capacidade = capacidade;
 
   return res.status(200).json(formatarAulaComVagas(aula));
+});
+
+app.delete('/api/aulas/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ erro: 'ID da aula inválido.' });
+  }
+
+  const indice = aulas.findIndex((aula) => aula.id === id);
+
+  if (indice === -1) {
+    return res.status(404).json({ erro: 'Aula não encontrada.' });
+  }
+
+  const aula = aulas[indice];
+
+  // Regra de negócio: aulas com matrículas não podem ser excluídas.
+  if (aula.matriculados > 0) {
+    return res.status(409).json({
+      erro: 'Não é possível excluir uma aula com matrículas.'
+    });
+  }
+
+  aulas.splice(indice, 1);
+  return res.status(204).end();
 });
 
 app.listen(port, () => {
