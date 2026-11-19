@@ -112,6 +112,57 @@ app.post('/api/aulas', (req, res) => {
   return res.status(201).json(formatarAulaComVagas(novaAula));
 });
 
+app.put('/api/aulas/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ erro: 'ID da aula inválido.' });
+  }
+
+  const aula = aulas.find((item) => item.id === id);
+
+  if (!aula) {
+    return res.status(404).json({ erro: 'Aula não encontrada.' });
+  }
+
+  const dados = req.body ?? {};
+  const modalidade =
+    typeof dados.modalidade === 'string' ? dados.modalidade.trim() : '';
+  const instrutor =
+    typeof dados.instrutor === 'string' ? dados.instrutor.trim() : '';
+  const horario =
+    typeof dados.horario === 'string' ? dados.horario.trim() : '';
+  const capacidade = Number(dados.capacidade);
+  const horarioValido = /^([01]\d|2[0-3]):([0-5]\d)$/.test(horario);
+
+  if (
+    modalidade.length < 2 ||
+    modalidade.length > 60 ||
+    instrutor.length < 2 ||
+    instrutor.length > 80 ||
+    !horarioValido ||
+    !Number.isInteger(capacidade) ||
+    capacidade < 1 ||
+    capacidade > 100
+  ) {
+    return res.status(400).json({ erro: 'Dados da aula inválidos.' });
+  }
+
+  // Regra de negócio: a capacidade não pode ficar abaixo das matrículas atuais.
+  if (capacidade < aula.matriculados) {
+    return res.status(409).json({
+      erro: 'A capacidade não pode ser menor que o número de matrículas.'
+    });
+  }
+
+  aula.modalidade = modalidade;
+  aula.instrutor = instrutor;
+  aula.horario = horario;
+  aula.capacidade = capacidade;
+
+  return res.status(200).json(formatarAulaComVagas(aula));
+});
+
 app.listen(port, () => {
   console.log(`Servidor disponível em http://localhost:${port}`);
 });
