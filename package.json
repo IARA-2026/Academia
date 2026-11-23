@@ -4,8 +4,9 @@
   "description": "Gestao de aulas e matriculas da academia",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
-  },
+  "start": "node app.js",
+  "seed": "node src/database/seed.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/IARA-2026/Academia.git"
