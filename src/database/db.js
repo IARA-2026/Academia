@@ -18,7 +18,16 @@ db.exec(`
     horario TEXT NOT NULL,
     capacidade INTEGER NOT NULL CHECK (capacidade > 0),
     matriculados INTEGER NOT NULL DEFAULT 0 CHECK (matriculados >= 0)
-  )
+  );
+
+  CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL CHECK (length(trim(nome)) BETWEEN 2 AND 80),
+    email TEXT NOT NULL COLLATE NOCASE UNIQUE,
+    senha_hash TEXT NOT NULL,
+    papel TEXT NOT NULL CHECK (papel IN ('aluno', 'admin')),
+    criado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 module.exports = db;
