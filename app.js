@@ -5,6 +5,7 @@ const express = require('express');
 const aulasService = require('./src/services/aulas.service');
 const aulasRouter = require('./src/routes/aulas.routes');
 const usuariosRouter = require('./src/routes/usuarios.routes');
+const matriculasRouter = require('./src/routes/matriculas.routes');
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/aulas', aulasRouter);
 app.use('/api/usuarios', usuariosRouter);
+app.use('/api/matriculas', matriculasRouter);
 
 // Middleware próprio: centraliza os erros e evita expor detalhes internos do servidor.
 app.use((erro, req, res, next) => {

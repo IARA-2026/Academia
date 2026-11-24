@@ -9,6 +9,7 @@ const caminhoBanco = path.join(pastaDados, 'academia.sqlite');
 const db = new Database(caminhoBanco);
 
 db.pragma('journal_mode = WAL');
+db.pragma('foreign_keys = ON');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS aulas (
@@ -28,6 +29,20 @@ db.exec(`
     papel TEXT NOT NULL CHECK (papel IN ('aluno', 'admin')),
     criado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
+
+  CREATE TABLE IF NOT EXISTS matriculas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE RESTRICT,
+    aula_id INTEGER NOT NULL REFERENCES aulas(id) ON DELETE RESTRICT,
+    status TEXT NOT NULL DEFAULT 'ativa'
+      CHECK (status IN ('ativa', 'cancelada')),
+    criada_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    cancelada_em TEXT
+  );
+
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_matriculas_ativa_usuario_aula
+    ON matriculas (usuario_id, aula_id)
+    WHERE status = 'ativa';
 `);
 
 module.exports = db;
