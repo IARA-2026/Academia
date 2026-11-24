@@ -196,6 +196,13 @@ function excluir(valor) {
     );
   }
 
+  if (aulasRepository.contarMatriculas(id) > 0) {
+  throw new ErroAplicacao(
+    'Não é possível excluir uma aula com histórico de matrículas.',
+    409
+  );
+}
+
   aulasRepository.excluir(id);
 }
 

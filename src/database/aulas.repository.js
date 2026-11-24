@@ -9,7 +9,20 @@ const db = require('./db');
  * @throws {Error} se ocorrer uma falha na consulta ao SQLite
  */
 function listarTodas() {
-  return db.prepare('SELECT * FROM aulas ORDER BY id').all();
+  return db.prepare(`
+    SELECT
+      a.id,
+      a.modalidade,
+      a.instrutor,
+      a.horario,
+      a.capacidade,
+      COUNT(m.id) AS matriculados
+    FROM aulas AS a
+    LEFT JOIN matriculas AS m
+      ON m.aula_id = a.id AND m.status = 'ativa'
+    GROUP BY a.id
+    ORDER BY a.id
+  `).all();
 }
 
 /**
@@ -20,7 +33,20 @@ function listarTodas() {
  * @throws {Error} se ocorrer uma falha na consulta ao SQLite
  */
 function buscarPorId(id) {
-  return db.prepare('SELECT * FROM aulas WHERE id = ?').get(id) ?? null;
+  return db.prepare(`
+    SELECT
+      a.id,
+      a.modalidade,
+      a.instrutor,
+      a.horario,
+      a.capacidade,
+      COUNT(m.id) AS matriculados
+    FROM aulas AS a
+    LEFT JOIN matriculas AS m
+      ON m.aula_id = a.id AND m.status = 'ativa'
+    WHERE a.id = ?
+    GROUP BY a.id
+  `).get(id) ?? null;
 }
 
 /**
@@ -91,10 +117,19 @@ function excluir(id) {
   return resultado.changes > 0;
 }
 
+function contarMatriculas(aulaId) {
+  const resultado = db.prepare(
+    'SELECT COUNT(*) AS total FROM matriculas WHERE aula_id = ?'
+  ).get(aulaId);
+
+  return resultado.total;
+}
+
 module.exports = {
   listarTodas,
   buscarPorId,
   contar,
+  contarMatriculas,
   criar,
   atualizar,
   excluir
