@@ -1,0 +1,292 @@
+:root {
+  color-scheme: dark;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #0d0b0d;
+  color: #f7edf3;
+  --painel: #1a1419;
+  --borda: #49313f;
+  --texto-secundario: #c0adba;
+  --rosa: #ff5ca8;
+  --erro: #ff8299;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 80% 0%, #351626 0, transparent 38rem),
+    #0d0b0d;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem max(1.25rem, calc((100% - 1000px) / 2));
+  border-bottom: 1px solid var(--borda);
+  background: rgb(13 11 13 / 90%);
+}
+
+.topo h1 {
+  margin: 0;
+  color: var(--rosa);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  letter-spacing: -0.04em;
+}
+
+.topo p,
+#sessao-usuario {
+  color: var(--texto-secundario);
+}
+
+.topo p {
+  margin: 0.35rem 0 0;
+}
+
+#sessao-usuario {
+  text-align: right;
+}
+
+main {
+  width: min(100% - 2rem, 1000px);
+  margin: 2rem auto 4rem;
+}
+
+main > section {
+  padding: clamp(1.2rem, 4vw, 2rem);
+  border: 1px solid var(--borda);
+  border-radius: 18px;
+  background: rgb(26 20 25 / 96%);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 35%);
+}
+
+main > section > section {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  background: #151115;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+}
+
+form {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 520px;
+}
+
+label {
+  margin-top: 0.3rem;
+  color: var(--texto-secundario);
+  font-size: 0.92rem;
+}
+
+input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--borda);
+  border-radius: 9px;
+  outline: none;
+  background: #0e0b0d;
+  color: #f7edf3;
+  font: inherit;
+}
+
+input:focus {
+  border-color: var(--rosa);
+  box-shadow: 0 0 0 3px rgb(255 92 168 / 18%);
+}
+
+button {
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--rosa);
+  color: #1b0d15;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+form button {
+  margin-top: 0.65rem;
+}
+
+button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+  transform: none;
+}
+
+#botao-mostrar-cadastro,
+#botao-mostrar-login,
+#botao-sair,
+.botao-secundario {
+  margin-top: 0.8rem;
+  border-color: var(--borda);
+  background: transparent;
+  color: #f7edf3;
+}
+
+#botao-sair {
+  margin-top: 0;
+}
+
+#lista-aulas,
+#lista-matriculas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cartao-aula,
+.cartao-matricula {
+  padding: 1.1rem;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  background: var(--painel);
+}
+
+.cartao-aula h3,
+.cartao-matricula h3 {
+  margin: 0 0 0.7rem;
+  color: var(--rosa);
+}
+
+.cartao-aula p,
+.cartao-matricula p {
+  margin: 0.4rem 0;
+  color: var(--texto-secundario);
+}
+
+.mensagem-erro {
+  color: var(--erro);
+}
+
+.mensagem-sucesso {
+  color: var(--rosa);
+}
+
+@media (max-width: 600px) {
+  .topo {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  #sessao-usuario {
+    width: 100%;
+    text-align: left;
+  }
+
+  #botao-sair {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.25rem;
+  }
+}
+
+#area-autenticacao {
+  width: min(100%, 560px);
+  margin-inline: auto;
+}
+
+#area-autenticacao form {
+  max-width: none;
+}
+
+#botao-mostrar-cadastro,
+#botao-mostrar-login {
+  display: block;
+  margin: 0.8rem auto 0;
+}
+
+.botao-visualizar-senha {
+  justify-self: start;
+  min-height: 36px;
+  margin-top: 0;
+  border-color: var(--borda);
+  background: transparent;
+  color: var(--rosa);
+}
+
+#form-aula {
+  width: min(100%, 520px);
+  margin-inline: auto;
+}
+
+#area-administracao > h2,
+#area-administracao > p {
+  text-align: center;
+}
+
+.campo-senha {
+  position: relative;
+  width: 100%;
+}
+
+.campo-senha input {
+  padding-right: 3.2rem;
+}
+
+.botao-visualizar-senha {
+  position: absolute;
+  top: 50%;
+  right: 0.4rem;
+  display: grid;
+  width: 2.5rem;
+  min-height: 2.5rem;
+  margin: 0;
+  padding: 0.4rem;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--texto-secundario);
+}
+
+.botao-visualizar-senha:hover {
+  transform: translateY(-50%);
+  background: transparent;
+  color: var(--rosa);
+  filter: none;
+}
+
+.botao-visualizar-senha svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.risco-olho {
+  display: none;
+}
+
+.botao-visualizar-senha[aria-pressed="true"] .risco-olho {
+  display: block;
+}

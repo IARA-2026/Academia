@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academia Fit</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div>
+      <h1>Academia Fit</h1>
+      <p>Encontre sua próxima aula.</p>
+    </div>
+
+    <div id="sessao-usuario" aria-live="polite"></div>
+    <button id="botao-sair" type="button" hidden>Sair</button>
+  </header>
+
+  <main>
+    <section id="area-autenticacao">
+      <h2 id="titulo-autenticacao">Entrar</h2>
+      <p id="mensagem-autenticacao" role="status" aria-live="polite"></p>
+
+      <form id="form-login">
+        <label for="login-email">E-mail</label>
+        <input id="login-email" name="email" type="email" required>
+
+        <label for="login-senha">Senha</label>
+        <div class="campo-senha">
+          <input id="login-senha" name="senha" type="password" required>
+          <button
+            class="botao-visualizar-senha"
+            type="button"
+            data-alvo="login-senha"
+            aria-label="Mostrar senha"
+            aria-pressed="false"
+            title="Mostrar senha"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path class="risco-olho" d="M3 3 21 21"></path>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit">Entrar</button>
+      </form>
+
+      <button id="botao-mostrar-cadastro" type="button">
+        Criar uma conta
+      </button>
+
+      <form id="form-cadastro" hidden>
+        <label for="cadastro-nome">Nome</label>
+        <input
+          id="cadastro-nome"
+          name="nome"
+          required
+          minlength="2"
+          maxlength="80"
+        >
+
+        <label for="cadastro-email">E-mail</label>
+        <input
+          id="cadastro-email"
+          name="email"
+          type="email"
+          required
+        >
+
+        <label for="cadastro-senha">Senha</label>
+        <div class="campo-senha">
+          <input
+            id="cadastro-senha"
+            name="senha"
+            type="password"
+            required
+            minlength="8"
+          >
+          <button
+            class="botao-visualizar-senha"
+            type="button"
+            data-alvo="cadastro-senha"
+            aria-label="Mostrar senha"
+            aria-pressed="false"
+            title="Mostrar senha"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path class="risco-olho" d="M3 3 21 21"></path>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit">Cadastrar</button>
+      </form>
+
+      <button id="botao-mostrar-login" type="button" hidden>
+        Já tenho uma conta
+      </button>
+    </section>
+
+    <section id="area-aplicacao" hidden>
+      <section aria-labelledby="titulo-aulas">
+        <h2 id="titulo-aulas">Agenda de aulas</h2>
+        <p id="estado-aulas" role="status" aria-live="polite"></p>
+        <div id="lista-aulas"></div>
+      </section>
+
+      <section
+        id="area-administracao"
+        hidden
+        aria-labelledby="titulo-administracao"
+      >
+        <h2 id="titulo-administracao">Gerenciar aulas</h2>
+        <p id="mensagem-aula" role="status" aria-live="polite"></p>
+
+        <form id="form-aula">
+          <input id="aula-id" name="id" type="hidden">
+
+          <label for="aula-modalidade">Modalidade</label>
+          <input
+            id="aula-modalidade"
+            name="modalidade"
+            required
+            minlength="2"
+            maxlength="60"
+          >
+
+          <label for="aula-instrutor">Instrutor</label>
+          <input
+            id="aula-instrutor"
+            name="instrutor"
+            required
+            minlength="2"
+            maxlength="80"
+          >
+
+          <label for="aula-horario">Horário</label>
+          <input
+            id="aula-horario"
+            name="horario"
+            type="time"
+            required
+          >
+
+          <label for="aula-capacidade">Capacidade</label>
+          <input
+            id="aula-capacidade"
+            name="capacidade"
+            type="number"
+            min="1"
+            max="100"
+            required
+          >
+
+          <button id="botao-salvar-aula" type="submit">
+            Cadastrar aula
+          </button>
+          <button id="botao-cancelar-edicao" type="button" hidden>
+            Cancelar edição
+          </button>
+        </form>
+      </section>
+
+      <section
+        id="area-matriculas"
+        hidden
+        aria-labelledby="titulo-matriculas"
+      >
+        <h2 id="titulo-matriculas">Minhas matrículas</h2>
+        <p id="estado-matriculas" role="status" aria-live="polite"></p>
+        <div id="lista-matriculas"></div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
