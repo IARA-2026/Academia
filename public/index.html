@@ -176,6 +176,51 @@
         <p id="estado-matriculas" role="status" aria-live="polite"></p>
         <div id="lista-matriculas"></div>
       </section>
+
+      <section
+        id="area-checkin"
+        hidden
+        aria-labelledby="titulo-checkin"
+      >
+        <h2 id="titulo-checkin">Check-in</h2>
+        <p id="estado-checkin" role="status" aria-live="polite"></p>
+        <button id="botao-checkin" type="button">
+          Registrar entrada
+        </button>
+
+        <h3>Meu histórico de entradas</h3>
+        <div id="lista-checkins"></div>
+      </section>
+
+      <section
+        id="area-planos"
+        hidden
+        aria-labelledby="titulo-planos"
+      >
+        <h2 id="titulo-planos">Gerenciar plano de aluno</h2>
+        <p id="mensagem-plano" role="status" aria-live="polite"></p>
+
+        <form id="form-plano">
+          <label for="plano-usuario-id">ID do aluno</label>
+          <input
+            id="plano-usuario-id"
+            name="usuarioId"
+            type="number"
+            min="1"
+            required
+          >
+
+          <label for="plano-validade">Data de validade</label>
+          <input
+            id="plano-validade"
+            name="validade"
+            type="date"
+            required
+          >
+
+          <button type="submit">Salvar validade do plano</button>
+        </form>
+      </section>
     </section>
   </main>
 </body>
