@@ -23,6 +23,15 @@ const areaMatriculas = document.querySelector('#area-matriculas');
 const estadoMatriculas = document.querySelector('#estado-matriculas');
 const listaMatriculas = document.querySelector('#lista-matriculas');
 
+const areaCheckin = document.querySelector('#area-checkin');
+const estadoCheckin = document.querySelector('#estado-checkin');
+const listaCheckins = document.querySelector('#lista-checkins');
+const botaoCheckin = document.querySelector('#botao-checkin');
+
+const areaPlanos = document.querySelector('#area-planos');
+const formPlano = document.querySelector('#form-plano');
+const mensagemPlano = document.querySelector('#mensagem-plano');
+
 let token = sessionStorage.getItem('academiaToken');
 let usuario = null;
 let aulasMatriculadas = new Set();
@@ -114,6 +123,10 @@ function atualizarInterface() {
     !autenticado || usuario.papel !== 'admin';
   areaMatriculas.hidden =
     !autenticado || usuario.papel !== 'aluno';
+  areaCheckin.hidden =
+    !autenticado || usuario.papel !== 'aluno';
+  areaPlanos.hidden =
+    !autenticado || usuario.papel !== 'admin';
 
   sessaoUsuario.textContent = autenticado
     ? `Olá, ${usuario.nome} (${usuario.papel})`
@@ -122,6 +135,7 @@ function atualizarInterface() {
   if (autenticado) {
     if (usuario.papel === 'aluno') {
       carregarMinhasMatriculas().then(carregarAulas);
+      carregarMeusCheckins();
     } else {
       carregarAulas();
     }
@@ -367,6 +381,50 @@ async function carregarMinhasMatriculas() {
   }
 }
 
+async function carregarMeusCheckins() {
+  mostrarMensagem(estadoCheckin, 'Carregando histórico...', null);
+  listaCheckins.replaceChildren();
+
+  try {
+    const checkins = await requisitarApi('/api/checkins/minhas');
+
+    if (checkins.length === 0) {
+      mostrarMensagem(
+        estadoCheckin,
+        'Você ainda não possui check-ins.',
+        null
+      );
+      return;
+    }
+
+    mostrarMensagem(
+      estadoCheckin,
+      `${checkins.length} entradas registradas.`,
+      'mensagem-sucesso'
+    );
+
+    for (const checkin of checkins) {
+      const cartao = document.createElement('article');
+      cartao.className = 'cartao-matricula';
+
+      const titulo = document.createElement('h3');
+      titulo.textContent = 'Entrada registrada';
+
+      const data = document.createElement('p');
+      data.textContent = `Data e hora: ${checkin.realizado_em}`;
+
+      const validade = document.createElement('p');
+      validade.textContent =
+        `Plano válido até: ${checkin.validade_plano}`;
+
+      cartao.append(titulo, data, validade);
+      listaCheckins.append(cartao);
+    }
+  } catch (erro) {
+    mostrarMensagem(estadoCheckin, erro.message, 'mensagem-erro');
+  }
+}
+
 async function matricularNaAula(aulaId, botao) {
   botao.disabled = true;
   mostrarMensagem(estadoMatriculas, 'Processando matrícula...', null);
@@ -489,6 +547,66 @@ async function excluirAula(id, botao) {
     botao.disabled = false;
   }
 }
+
+botaoCheckin.addEventListener('click', async () => {
+  if (botaoCheckin.disabled) return;
+
+  botaoCheckin.disabled = true;
+  mostrarMensagem(estadoCheckin, 'Verificando seu plano...', null);
+
+  try {
+    await requisitarApi('/api/checkins', {
+      method: 'POST'
+    });
+
+    mostrarMensagem(
+      estadoCheckin,
+      'Check-in registrado com sucesso.',
+      'mensagem-sucesso'
+    );
+
+    await carregarMeusCheckins();
+  } catch (erro) {
+    mostrarMensagem(estadoCheckin, erro.message, 'mensagem-erro');
+  } finally {
+    botaoCheckin.disabled = false;
+  }
+});
+
+formPlano.addEventListener('submit', async (evento) => {
+  evento.preventDefault();
+
+  const botao = formPlano.querySelector('button[type="submit"]');
+  if (botao.disabled) return;
+
+  const usuarioId = formPlano.elements.usuarioId.value;
+  const validade = formPlano.elements.validade.value;
+
+  botao.disabled = true;
+  mostrarMensagem(mensagemPlano, 'Salvando plano...', null);
+
+  try {
+    const plano = await requisitarApi(
+      `/api/planos/${encodeURIComponent(usuarioId)}`,
+      {
+        method: 'PUT',
+        body: { validade }
+      }
+    );
+
+    mostrarMensagem(
+      mensagemPlano,
+      `Plano do aluno ${plano.usuario_id} válido até ${plano.validade}.`,
+      'mensagem-sucesso'
+    );
+
+    formPlano.reset();
+  } catch (erro) {
+    mostrarMensagem(mensagemPlano, erro.message, 'mensagem-erro');
+  } finally {
+    botao.disabled = false;
+  }
+});
 
 document.querySelectorAll('.botao-visualizar-senha').forEach((botao) => {
   botao.addEventListener('click', () => {
