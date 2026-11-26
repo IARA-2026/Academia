@@ -7,12 +7,16 @@ const aulasRouter = require('./src/routes/aulas.routes');
 const usuariosRouter = require('./src/routes/usuarios.routes');
 const matriculasRouter = require('./src/routes/matriculas.routes');
 const path = require('node:path');
+const planosRouter = require('./src/routes/planos.routes');
+const checkinsRouter = require('./src/routes/checkins.routes');
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api/planos', planosRouter);
+app.use('/api/checkins', checkinsRouter);
 
 app.get('/', (req, res) => {
   const total = aulasService.contar();

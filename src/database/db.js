@@ -43,6 +43,24 @@ db.exec(`
   CREATE UNIQUE INDEX IF NOT EXISTS idx_matriculas_ativa_usuario_aula
     ON matriculas (usuario_id, aula_id)
     WHERE status = 'ativa';
-`);
+
+      CREATE TABLE IF NOT EXISTS planos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL UNIQUE
+      REFERENCES usuarios(id) ON DELETE RESTRICT,
+    validade TEXT NOT NULL
+      CHECK (date(validade) IS NOT NULL)
+  );
+
+  CREATE TABLE IF NOT EXISTS checkins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL
+      REFERENCES usuarios(id) ON DELETE RESTRICT,
+    plano_id INTEGER NOT NULL
+      REFERENCES planos(id) ON DELETE RESTRICT,
+    realizado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+    `);
 
 module.exports = db;
